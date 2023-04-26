@@ -1,17 +1,6 @@
-// import 'package:api_test_app/models/models_get.dart';
-// import 'dart:convert';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-
-// class Rest_APi {
-
-//  static Future<List<Get_date>> fetchMessage(){
-//   const Uri="";
-//   final url=Uri.parse
-//   return
-//  }
-// }
 
 import 'package:api_test_app/models/models_sevice.dart';
 import 'package:http/http.dart';
