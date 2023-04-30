@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:api_test_app/functions/rest_api.dart';
 import 'package:api_test_app/models/models_get.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -13,34 +14,13 @@ class Test_api extends StatefulWidget {
 }
 
 class _Test_apiState extends State<Test_api> {
-  List<Welcome> models = [];
+  List<Data> models = [];
 
   void fetchMessage() async {
-    const url = "http://185.196.213.43:7088/support-chats/get-all-dialog/1";
-    final uri = Uri.parse(url);
-    try {
-      print("Loading is start");
-      Response response = await http.get(uri);
-      if (response.statusCode == 200) {
-        final body = response.body;
-        final json = jsonDecode(body);
-        print(json["object"]);
-        final result = json["object"] as List<dynamic>;
-        final message = result.map((e) {
-          return welcomeFromJson(json);
-        }).toList();
-        setState(() {
-          models = message;
-        });
-        print(models.length);
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Error: $e"),
-      ));
-
-      Text("Error is here => $e");
-    }
+    final responce = await Support_Api.fetchMessage(context);
+    setState(() {
+      models = responce!;
+    });
   }
 
   @override
@@ -58,10 +38,14 @@ class _Test_apiState extends State<Test_api> {
               ),
     );
   }
-}
 
-Widget items(Welcome models, index) {
-  return ListTile(
-    title: Text(""),
-  );
+  Widget items(Data models, index) {
+    return ListTile(
+      title: Text(models.id.toString()),
+      leading: Text(
+        models.dialogs.message,
+        style: TextStyle(color: Colors.black),
+      ),
+    );
+  }
 }
