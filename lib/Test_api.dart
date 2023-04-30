@@ -1,10 +1,9 @@
-import 'dart:convert';
-
 import 'package:api_test_app/functions/rest_api.dart';
 import 'package:api_test_app/models/models_get.dart';
+import 'package:api_test_app/screen/sign_in.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Test_api extends StatefulWidget {
   const Test_api({super.key});
@@ -14,7 +13,18 @@ class Test_api extends StatefulWidget {
 }
 
 class _Test_apiState extends State<Test_api> {
+  late SharedPreferences logindata;
+  late bool new_user;
   List<Data> models = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SharedPreferences.getInstance().then((SharedPreferences prefs) {
+      logindata = prefs;
+    });
+  }
 
   void fetchMessage() async {
     final responce = await Support_Api.fetchMessage(context);
@@ -27,7 +37,21 @@ class _Test_apiState extends State<Test_api> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: fetchMessage),
-      appBar: AppBar(title: const Text("Test APi's")),
+      appBar: AppBar(
+        title: const Text("Test APi's"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                logindata.setBool("login", true);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SignIn(),
+                    ));
+              },
+              icon: const Icon(Icons.exit_to_app_rounded))
+        ],
+      ),
       body: models.isEmpty
           ? Center(child: Text("Data yuklanmoqda"))
           : ListView.builder(
